@@ -146,7 +146,7 @@ class Test(unittest.TestCase):
     def test_retained_messages(self):
       qos0topic="fromb/qos 0"
       qos1topic="fromb/qos 1"
-      qos2topic="fromb/qos2"
+      qos2topic="fromb/qos 1-1"
       wildcardtopic="fromb/+"
       print("Retained message test starting")
       succeeded = False
@@ -430,21 +430,24 @@ if __name__ == "__main__":
     sys.exit(2)
 
   iterations = 1
+  print(opts)
 
   global topics, wildtopics, nosubscribe_topics
   topics =  ("TopicA", "TopicA/B", "Topic/C", "TopicA/C", "/TopicA")
   wildtopics = ("TopicA/+", "+/C", "#", "/#", "/+", "+/+", "TopicA/#")
   nosubscribe_topics = ("test/nosubscribe",)
 
-  host = "localhost"
+  host = "10.0.0.4"
   port = 1883
   for o, a in opts:
     if o in ("--help"):
+      print("help")
       usage()
       sys.exit()
     elif o in ("-n", "--nosubscribe_topic_filter"):
       nosubscribe_topic_filter = a
     elif o in ("-h", "--hostname"):
+      print("hostname")
       host = a
     elif o in ("-p", "--port"):
       port = int(a)
