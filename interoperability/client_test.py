@@ -117,7 +117,7 @@ class Test(unittest.TestCase):
 
         connack = aclient.connect(host=host, port=port)
         assert connack.flags == 0x00 # Session present
-        aclient.subscribe([topics[0]], [2])
+        aclient.subscribe([topics[0]], [1])
         aclient.publish(topics[0], b"qos 0")
         aclient.publish(topics[0], b"qos 1", 1)
         aclient.publish(topics[0], b"qos 1-1", 1)
@@ -159,7 +159,7 @@ class Test(unittest.TestCase):
         aclient.publish(topics[2], b"qos 1", 1, retained=True)
         aclient.publish(topics[3], b"qos 1-1", 1, retained=True)
         time.sleep(1)
-        aclient.subscribe([wildtopics[5]], [2])
+        aclient.subscribe([wildtopics[5]], [1])
         time.sleep(1)
         aclient.disconnect()
 
@@ -173,7 +173,7 @@ class Test(unittest.TestCase):
         aclient.publish(topics[2], b"", 1, retained=True)
         aclient.publish(topics[3], b"", 1, retained=True)
         time.sleep(1) # wait for QoS 2 exchange to be completed
-        aclient.subscribe([wildtopics[5]], [2])
+        aclient.subscribe([wildtopics[5]], [1])
         time.sleep(1)
         aclient.disconnect()
 
@@ -195,7 +195,7 @@ class Test(unittest.TestCase):
           willTopic=topics[2], willMessage=b"client not disconnected", keepalive=2)
         assert connack.flags == 0x00 # Session present
         connack = bclient.connect(host=host, port=port, cleansession=False)
-        bclient.subscribe([topics[2]], [2])
+        bclient.subscribe([topics[2]], [1])
         time.sleep(.1)
         aclient.terminate()
         time.sleep(5)
@@ -241,7 +241,7 @@ class Test(unittest.TestCase):
         callback.clear()
 
         connack = aclient.connect(host=host, port=port, cleansession=False)
-        aclient.subscribe([wildtopics[5]], [2])
+        aclient.subscribe([wildtopics[5]], [1])
         aclient.disconnect()
 
         connack = bclient.connect(host=host, port=port, cleansession=True)
@@ -307,7 +307,7 @@ class Test(unittest.TestCase):
         aclient.connect(host=host, port=port, cleansession=True, keepalive=5, willFlag=True,
               willTopic=topics[4], willMessage=b"keepalive expiry")
         bclient.connect(host=host, port=port, cleansession=True, keepalive=0)
-        bclient.subscribe([topics[4]], [2])
+        bclient.subscribe([topics[4]], [1])
         time.sleep(15)
         bclient.disconnect()
         assert len(callback2.messages) == 1, "length should be 1: %s" % callback2.messages # should have the will message
@@ -328,7 +328,7 @@ class Test(unittest.TestCase):
         callback.clear()
         callback2.clear()
         bclient.connect(host=host, port=port, cleansession=False)
-        bclient.subscribe([wildtopics[6]], [2])
+        bclient.subscribe([wildtopics[6]], [1])
         bclient.pause() # stops responding to incoming publishes
         bclient.publish(topics[1], b"", 1, retained=False)
         bclient.publish(topics[3], b"", 1, retained=False)
@@ -355,7 +355,7 @@ class Test(unittest.TestCase):
       try:
         callback.clear()
         aclient.connect(host=host, port=port)
-        aclient.subscribe([nosubscribe_topics[0]], [2])
+        aclient.subscribe([nosubscribe_topics[0]], [1])
         time.sleep(.2)
         # subscribeds is a list of (msgid, [qos])
         assert callback.subscribeds[0][1][0] == 0x80, "return code should be 0x80 %s" % callback.subscribeds
@@ -376,7 +376,7 @@ class Test(unittest.TestCase):
       try:
         callback2.clear()
         bclient.connect(host=host, port=port, cleansession=True, keepalive=0)
-        bclient.subscribe([wildtopics[5]], [2])
+        bclient.subscribe([wildtopics[5]], [1])
         time.sleep(1) # wait for all retained messages, hopefully
         callback2.clear()
         bclient.publish("$"+topics[1], b"", 1, retained=False)
@@ -396,9 +396,9 @@ class Test(unittest.TestCase):
       try:
         callback2.clear()
         bclient.connect(host=host, port=port, cleansession=True)
-        bclient.subscribe([topics[0]], [2])
-        bclient.subscribe([topics[1]], [2])
-        bclient.subscribe([topics[2]], [2])
+        bclient.subscribe([topics[0]], [1])
+        bclient.subscribe([topics[1]], [1])
+        bclient.subscribe([topics[2]], [1])
         time.sleep(1) # wait for all retained messages, hopefully
         # Unsubscribed from one topic
         bclient.unsubscribe([topics[0]])
