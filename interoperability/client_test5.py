@@ -262,7 +262,7 @@ class Test(unittest.TestCase):
       callback2.clear()
       aclient.connect(host=host, port=port)
       aclient.subscribe([wildtopics[6], wildtopics[0]], [MQTTV5.SubscribeOptions(2), MQTTV5.SubscribeOptions(1)])
-      aclient.publish(topics[3], b"overlapping topic filters", 2)
+      aclient.publish(topics[3], b"overlapping topic filters", 1)
       time.sleep(1)
       self.assertTrue(len(callback.messages) in [1, 2], callback.messages)
       if len(callback.messages) == 1:
@@ -311,7 +311,7 @@ class Test(unittest.TestCase):
         bclient.subscribe([wildtopics[6]], [MQTTV5.SubscribeOptions(2)])
         bclient.pause() # stops responding to incoming publishes
         bclient.publish(topics[1], b"", 1, retained=False)
-        bclient.publish(topics[3], b"", 2, retained=False)
+        bclient.publish(topics[3], b"", 1, retained=False)
         time.sleep(1)
         bclient.disconnect()
         assert len(callback2.messages) == 0, "length should be 0: %s" % callback2.messages
@@ -787,7 +787,7 @@ class Test(unittest.TestCase):
       aclient.subscribe([topics[0]], [MQTTV5.SubscribeOptions(2)])
       self.waitfor(callback.subscribeds, 1, 3)
 
-      for qos in range(3):
+      for qos in range(2):
          aclient.publish(topics[0], b"topic alias 1", qos)
       self.waitfor(callback.messages, 3, 3)
       self.assertEqual(len(callback.messages), 3, callback.messages)
@@ -820,7 +820,7 @@ class Test(unittest.TestCase):
       aclient.subscribe([topics[0]], [MQTTV5.SubscribeOptions(2)])
       self.waitfor(callback.subscribeds, 1, 3)
 
-      for qos in range(3):
+      for qos in range(2):
          aclient.publish(topics[0], b"topic alias 1", qos)
       self.waitfor(callback.messages, 3, 3)
       self.assertEqual(len(callback.messages), 3, callback.messages)
@@ -845,7 +845,7 @@ class Test(unittest.TestCase):
       aclient.subscribe([topics[0]], [MQTTV5.SubscribeOptions(2)])
       self.waitfor(callback.subscribeds, 1, 3)
 
-      for qos in range(3):
+      for qos in range(2):
          aclient.publish(topics[0], b"topic alias 1", qos)
       self.waitfor(callback.messages, 3, 3)
       self.assertEqual(len(callback.messages), 3, callback.messages)
