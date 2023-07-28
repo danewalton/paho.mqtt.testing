@@ -120,7 +120,7 @@ class Test(unittest.TestCase):
         aclient.subscribe([topics[0]], [2])
         aclient.publish(topics[0], b"qos 0")
         aclient.publish(topics[0], b"qos 1", 1)
-        aclient.publish(topics[0], b"qos 2", 2)
+        aclient.publish(topics[0], b"qos 1-1", 1)
         time.sleep(2)
         aclient.disconnect()
         self.assertEqual(len(callback.messages), 3)
@@ -157,7 +157,7 @@ class Test(unittest.TestCase):
         assert connack.flags == 0x00 # Session present
         aclient.publish(topics[1], b"qos 0", 0, retained=True)
         aclient.publish(topics[2], b"qos 1", 1, retained=True)
-        aclient.publish(topics[3], b"qos 2", 2, retained=True)
+        aclient.publish(topics[3], b"qos 1-1", 1, retained=True)
         time.sleep(1)
         aclient.subscribe([wildtopics[5]], [2])
         time.sleep(1)
@@ -171,7 +171,7 @@ class Test(unittest.TestCase):
         assert connack.flags == 0x00 # Session present
         aclient.publish(topics[1], b"", 0, retained=True)
         aclient.publish(topics[2], b"", 1, retained=True)
-        aclient.publish(topics[3], b"", 2, retained=True)
+        aclient.publish(topics[3], b"", 1, retained=True)
         time.sleep(1) # wait for QoS 2 exchange to be completed
         aclient.subscribe([wildtopics[5]], [2])
         time.sleep(1)
@@ -248,7 +248,7 @@ class Test(unittest.TestCase):
         assert connack.flags == 0x00 # Session present
         bclient.publish(topics[1], b"qos 0", 0)
         bclient.publish(topics[2], b"qos 1", 1)
-        bclient.publish(topics[3], b"qos 2", 2)
+        bclient.publish(topics[3], b"qos 1-1", 1)
         time.sleep(2)
         bclient.disconnect()
 
@@ -278,7 +278,7 @@ class Test(unittest.TestCase):
         callback2.clear()
         aclient.connect(host=host, port=port)
         aclient.subscribe([wildtopics[6], wildtopics[0]], [2, 1])
-        aclient.publish(topics[3], b"overlapping topic filters", 2)
+        aclient.publish(topics[3], b"overlapping topic filters", 1)
         time.sleep(1)
         assert len(callback.messages) in [1, 2]
         if len(callback.messages) == 1:
@@ -286,8 +286,8 @@ class Test(unittest.TestCase):
           assert callback.messages[0][2] == 2
         else:
           print("This server is publishing one message per each matching overlapping subscription.")
-          assert (callback.messages[0][2] == 2 and callback.messages[1][2] == 1) or \
-                 (callback.messages[0][2] == 1 and callback.messages[1][2] == 2), callback.messages
+          assert (callback.messages[0][2] == 1 and callback.messages[1][2] == 1) or \
+                 (callback.messages[0][2] == 1 and callback.messages[1][2] == 1), callback.messages
         aclient.disconnect()
       except:
         traceback.print_exc()
@@ -331,7 +331,7 @@ class Test(unittest.TestCase):
         bclient.subscribe([wildtopics[6]], [2])
         bclient.pause() # stops responding to incoming publishes
         bclient.publish(topics[1], b"", 1, retained=False)
-        bclient.publish(topics[3], b"", 2, retained=False)
+        bclient.publish(topics[3], b"", 1, retained=False)
         time.sleep(1)
         bclient.disconnect()
         assert len(callback2.messages) == 0, "length should be 0: %s" % callback2.messages
